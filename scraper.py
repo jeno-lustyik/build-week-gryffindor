@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
-url = 'https://www.goodreads.com/book/show/2767052-the-hunger-games'
+url = 'https://www.goodreads.com/book/show/40961427-1984'
 pg = requests.get(url)
 soup = BeautifulSoup(pg.content, 'html.parser')
 
@@ -30,14 +30,16 @@ awards = awards.text.replace('\n', '').replace('...more', ', ').replace('...less
 print(awards)
 
 box = soup.find('div', id='details')
-box = box.find_all('div')
+box_div = box.find_all('div')
 setting = []
-for i in box:
+for i in box_div:
     if i.text == 'Setting':
-        set_box = box[box.index(i)+1].find_all('a')
+        set_box = box_div[box_div.index(i) + 1].find_all('a')
         for k in set_box:
             setting.append(k.text.replace(',', ' -'))
 setting = ','.join(setting)
 print(setting)
 
+publish_date = box.find('nobr', class_='greyText').text.strip()[-5:-1]
 
+print(publish_date)
