@@ -51,3 +51,8 @@ print(series_count)
 #print(publish_year)
 # year_value = publish_year.text
 # print(publish_year)
+
+# Book_year
+book_publish = soup1.find('div', id='details')
+publish_date = book_publish.find('nobr',class_="greyText").text
+print(publish_date)
