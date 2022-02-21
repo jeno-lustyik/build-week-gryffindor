@@ -36,6 +36,5 @@ for i in box:
         set_box = box[box.index(i)+1].find_all('a')
         for k in set_box:
             setting.append(k.text.replace(',', ' -'))
-        # setting = box[box.index(i)+1].text.replace(', ', ' - ').replace('\n', '')
 setting = ','.join(setting)
 print(setting)
