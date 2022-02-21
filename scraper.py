@@ -5,10 +5,11 @@ url = 'https://www.goodreads.com/book/show/2767052-the-hunger-games'
 pg = requests.get(url)
 soup = BeautifulSoup(pg.content, 'html.parser')
 
-title = soup.find('h1', class_='gr-h1 gr-h1--serif')
-author = soup.find('span', itemprop='name')
-num_reviews = soup.find('meta', itemprop='reviewCount')
-num_ratings = soup.find('meta', itemprop='ratingCount')
+
+title = soup.find('h1', class_='gr-h1 gr-h1--serif').text
+author = soup.find('span', itemprop='name').text
+num_reviews = soup.find('meta', itemprop='reviewCount')['content']
+num_ratings = soup.find('meta', itemprop='ratingCount')['content']
 
 genre = soup.find_all('a', class_='actionLinkLite bookPageGenreLink')
 genres = []
@@ -38,3 +39,5 @@ for i in box:
             setting.append(k.text.replace(',', ' -'))
 setting = ','.join(setting)
 print(setting)
+
+
