@@ -48,7 +48,7 @@ def book_1000_links():
         soup1 = BeautifulSoup(page1.content, 'html.parser')
         book_link = soup1.find_all('a', class_="bookTitle")
 
-        for i in book_link:
+        for i in book_link[45:51]:
             book_href = i.get('href')
             books_links_1000.append(book_href)
 
@@ -62,11 +62,23 @@ books_links_1000 = book_1000_links()
 # print(books_links_1000)
 
 
+
+# creating data frame
+df = pd.DataFrame(
+    {'avg_rating':book_star_rating,
+     'book_pages': book_num_pages,
+     'publish_year':book_publish_year,
+     'book_series':book_series_list})
+
+df.to_csv('100books.csv',index=False)
+
+
+
 # Scraper function to scrape and clean required elements from the web.
 def book_avg_rating():
     # for 1st 100 books, i was giving range of first 100 books.
 
-    for i in books_links_1000[0:50]:
+    for i in books_links_1000:
         time.sleep(5)
         url = f"https://www.goodreads.com{i}"
         print(url)
@@ -78,6 +90,7 @@ def book_avg_rating():
         book_stars = soup1.find('span', {'itemprop': 'ratingValue'})
         time.sleep(5)
         if book_stars is not None:
+            time.sleep(5)
             book_star_rating.append(book_stars.text.strip())
         else:
             book_star_rating.append('not found')
@@ -97,7 +110,8 @@ def book_avg_rating():
         publish_date = soup1.find('nobr', class_="greyText").text.strip()[-5:-1]
 
         if publish_date is not None:
-            print(publish_date)
+            book_publish_year.append(publish_date[-5:-1])
+            time.sleep(10)
         else:
             print("not found")
 
@@ -112,7 +126,11 @@ def book_avg_rating():
             book_series_list.append('No series Found')
         time.sleep(5)
 
-        print(book_series_list)
+        df = pd.DataFrame(
+            {'avg_rating':book_star_rating,
+             'book_pages': book_num_pages,
+             'publish_year':book_publish_year,
+             'book_series':book_series_list})
 
     return book_star_rating
 
