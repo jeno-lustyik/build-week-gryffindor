@@ -48,7 +48,7 @@ def book_1000_links():
         soup1 = BeautifulSoup(page1.content, 'html.parser')
         book_link = soup1.find_all('a', class_="bookTitle")
 
-        for i in book_link:
+        for i in book_link[45:51]:
             book_href = i.get('href')
             books_links_1000.append(book_href)
 
@@ -59,10 +59,6 @@ def book_1000_links():
 books_links_1000 = book_1000_links()
 
 
-# print(books_links_1000)
-
-
-# Scraper function to scrape and clean required elements from the web.
 def book_details():
     for url in books_links_1000[90:]:
         # Useragent and requesting the page
@@ -185,7 +181,5 @@ def book_details():
         df.to_csv('100books.csv', mode='w', index=False, header=False)
 
 
-initial_links()
-book_1000_links()
 book_details()
 
