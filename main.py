@@ -63,68 +63,14 @@ books_links_1000 = book_1000_links()
 
 
 # Scraper function to scrape and clean required elements from the web.
-def book_avg_rating():
-    # for 1st 100 books, i was giving range of first 100 books.
-
-    for i in books_links_1000[0:50]:
-        time.sleep(5)
-        url = f"https://www.goodreads.com{i}"
-        print(url)
-        page1 = requests.get(url)
-        # print(page1)
-        soup1 = BeautifulSoup(page1.content, 'html.parser')
-
-        # avg_rating for each books
-        book_stars = soup1.find('span', {'itemprop': 'ratingValue'})
-        time.sleep(5)
-        if book_stars is not None:
-            book_star_rating.append(book_stars.text.strip())
-        else:
-            book_star_rating.append('not found')
-
-        time.sleep(5)
-
-        # no.of pages in the book
-        pages_count = soup1.find('span', {'itemprop': 'numberOfPages'})
-        time.sleep(5)
-        if pages_count is not None:
-            book_num_pages.append(pages_count.text.strip().split()[0])
-        else:
-            book_num_pages.append('not found')
-        time.sleep(5)
-
-        # Book publishing year
-        publish_date = soup1.find('nobr', class_="greyText").text.strip()[-5:-1]
-
-        if publish_date is not None:
-            print(publish_date)
-        else:
-            print("not found")
-
-        # Book series-only few books have series and others dont.
-        book_series = soup1.find('h2', id="bookSeries")
-        time.sleep(5)
-        if len(book_series.contents) > 1:
-            time.sleep(5)
-            a = book_series.a.text.strip()
-            book_series_list.append(a[1:(len(a) - 1)])
-        else:
-            book_series_list.append('No series Found')
-        time.sleep(5)
-
-        print(book_series_list)
-
-    return book_star_rating
-
-
 def book_details():
-    for url in books_links_1000:
+    for url in books_links_1000[90:]:
         # Useragent and requesting the page
         headers = {'User-Agent': 'Chrome/98.0.4758.102'}
         pg = requests.get(f"https://www.goodreads.com{url}", headers=headers)
-        time.sleep(10)
+        time.sleep(5)
         soup = BeautifulSoup(pg.content, 'html.parser')
-        time.sleep(10)
+        time.sleep(5)
 
         # Titles
         if soup.find('h1', class_='gr-h1 gr-h1--serif') is not None:
@@ -154,9 +100,9 @@ def book_details():
             genre = soup.find_all('a', class_='actionLinkLite bookPageGenreLink')
             genres_dump = []
             for i in genre:
-                if len(genres_dump) <= 1 and i not in genres_dump:
+                if len(genres_dump) <= 1 and i.text not in genres_dump:
                     genres_dump.append(f'{i.text}, ')
-                elif len(genres_dump) == 2 and i not in genres_dump:
+                elif len(genres_dump) == 2 and i.text not in genres_dump:
                     genres_dump.append(i.text)
                     genres.append(''.join(genres_dump))
                     break
@@ -182,9 +128,14 @@ def book_details():
                 if i.text == 'Setting':
                     set_box = box_div[box_div.index(i) + 1].find_all('a')
                     for k in set_box:
-                        setting.append(k.text.replace(',', ' -'))
-            setting = ','.join(setting)
-            settings.append(setting)
+                        if len(setting) == 0:
+                            setting = [k.text.replace(',', ' -')]
+                        else:
+                            setting.append(k.text.replace(',', ' -'))
+                    setting = ','.join(setting)
+                    settings.append(setting)
+            if len(setting) == 0:
+                settings.append('Not found')
         else:
             settings.append('Not found')
 
@@ -234,4 +185,7 @@ def book_details():
         df.to_csv('100books.csv', mode='w', index=False, header=False)
 
 
+initial_links()
+book_1000_links()
 book_details()
+
