@@ -48,7 +48,7 @@ def book_1000_links():
         soup1 = BeautifulSoup(page1.content, 'html.parser')
         book_link = soup1.find_all('a', class_="bookTitle")
 
-        for i in book_link:
+        for i in book_link[45:51]:
             book_href = i.get('href')
             books_links_1000.append(book_href)
 
@@ -78,7 +78,7 @@ df.to_csv('100books.csv',index=False)
 def book_avg_rating():
     # for 1st 100 books, i was giving range of first 100 books.
 
-    for i in books_links_1000[0:10]:
+    for i in books_links_1000:
         time.sleep(5)
         url = f"https://www.goodreads.com{i}"
         print(url)
