@@ -1,4 +1,5 @@
 from ast import IsNot
+import urllib.request
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -26,7 +27,7 @@ book_series_list = []
 
 # we need to scrape 1000 books, Each webpage has 100 books, so we need 10 webpages
 def initial_links():
-    for i in range(1, 2):
+    for i in range(1, 11):
         url = f"https://www.goodreads.com/list/show/47.Best_Dystopian_and_Post_Apocalyptic_Fiction?page={i}"
         page_10_links.append(url)
     # print(page_10_link)
@@ -48,7 +49,7 @@ def book_1000_links():
         soup1 = BeautifulSoup(page1.content, 'html.parser')
         book_link = soup1.find_all('a', class_="bookTitle")
 
-        for i in book_link[45:51]:
+        for i in book_link:
             book_href = i.get('href')
             books_links_1000.append(book_href)
 
@@ -60,7 +61,7 @@ books_links_1000 = book_1000_links()
 
 
 def book_details():
-    for url in books_links_1000[90:]:
+    for url in books_links_1000[768:]:
         # Useragent and requesting the page
         headers = {'User-Agent': 'Chrome/98.0.4758.102'}
         pg = requests.get(f"https://www.goodreads.com{url}", headers=headers)
@@ -160,12 +161,14 @@ def book_details():
         if soup.find('h2', id="bookSeries") is not None:
             book_series = soup.find('h2', id="bookSeries")
             a = book_series.text.strip()
-            book_series_list.append(a[1:(len(a) - 1)])
+            if len(a) > 0:
+                book_series_list.append(a[1:(len(a) - 1)])
+            else:
+                book_series_list.append('No series found')
         else:
             book_series_list.append('No series found')
 
-        df = pd.DataFrame(
-            {'title': titles,
+        a = {'title': titles,
              'author': authors,
              'num_reviews': num_ratings,
              'num_ratings': num_reviews,
@@ -175,11 +178,13 @@ def book_details():
              'book_series': book_series_list,
              'genre': genres,
              'awards': awards,
-             'places': settings})
-
-        print(df)
+             'places': settings}
+        df = pd.DataFrame.from_dict(a, orient='index')
+        df.transpose()
         df.to_csv('100books.csv', mode='w', index=False, header=False)
 
 
+initial_links()
+book_1000_links()
 book_details()
 
