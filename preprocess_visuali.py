@@ -37,49 +37,57 @@ print(df1.head())
 #print(df.head())
 
 
+def avg_rating_clean_up():
+    avg_ratin = df['avg_rating'].tolist()
+    c = []
+    for i in avg_ratin:
+        if i!='Not found':
+            c.append(i)
+
+        else:
+            c.append(0)
+ 
+    d = df.assign(average_rating_flo = c)
+    d['average_rating_flo'] = d['average_rating_flo'].astype(float)
+    return d
+
+df2 = avg_rating_clean_up()
+#print(df2.dtypes)
 
 
 # # # # #defining a function for the min-max normalization
 def min_max_norm():
-    minmax_norm = df.copy()
-    minmax_norm.loc[minmax_norm['avg_rating'] == 'Not found', 'avg_rating'] = np.nan
-    minmax_norm =  minmax_norm['avg_rating'].astype(float)
-    column = 'avg_rating'
+    minmax_norm = df2.copy()
+    minmax_norm
+    column = 'average_rating_flo'
     minmax_norm[column] = 1 + (minmax_norm[column] - minmax_norm[column].min())/(minmax_norm[column].max() -  minmax_norm[column].min()) * 9
-    c = minmax_norm.assign(minmax_norm_ratings = minmax_norm[column])
-    return c
-df2 = min_max_norm()
-print(df2)
+    e = df2.assign(minmax_norm_ratings = minmax_norm[column])
+    return e
+df3 = min_max_norm()
+#print(df3)
 
 # # #finding the mean of avg_ratings column 
-# average = df2.avg_rating.mean()
-# #print(average)
-# #defining a function for the mean normalization
-# def mean_norm():
-#     mean_normal = df2.copy()
-#     column = 'avg_rating'
-#     mean_normal[column] = 1 + ( mean_normal[column] - average)/(mean_normal[column].max() - mean_normal[column].min()) * 9
-#     b = df2.assign(mean_norm_ratings =  mean_normal[column])
-#     return b
-# # df3 = mean_norm()
+average = df2.average_rating_flo.mean()
+#print(average)
+#defining a function for the mean normalization
+def mean_norm():
+    mean_normal = df2.copy()
+    column = 'average_rating_flo'
+    mean_normal[column] = 1 + ( mean_normal[column] - average)/(mean_normal[column].max() - mean_normal[column].min()) * 9
+    f = df3.assign(mean_norm_ratings =  mean_normal[column])
+    return f
+df4= mean_norm()
 
-# # print(df3)
+print(df4)
 
-# # #grouping books by original publish year
-# c = df2.copy()
-# d = c.groupby('original_publish_year')['minmax_norm_ratings'].mean()
-# df4 = pd.DataFrame(d)
-# df4.reset_index(inplace=True)
-# df4.rename(columns = {'original_publish_year': 'original_publish_year', 'minmax_norm_ratings': 'Ratings minmax mean'}, inplace = True)
-# print(df4)
 
 
 # # #create a function that  returns the maximum minmax rating 
-# def author_name(name: str):
-#     e = df3.loc[df['author'] == name]
-#     f = e.sort_values('minmax_norm_ratings', ascending= False)
-#     return f.iloc[0, 0]
-# print(author_name('Dean F. Wilson'))
+def author_name(name: str):
+    g = df3.loc[df['author'] == name]
+    h = g.sort_values('minmax_norm_ratings', ascending= False)
+    return h.iloc[0, 0]
+print(author_name('Dean F. Wilson'))
 
 # #print(df.groupby('Director name')['Rating'])
 # #Visualizationn
