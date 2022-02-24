@@ -12,6 +12,8 @@ st.subheader("An insight into the best Dystopian books and authors")
 headers = ['url', 'title', 'author', 'num_ratings', 'num_reviews', 'avg_rating', 'pages', 'publish_date', 'series', 'genres', 'awards', 'places']
 df = pd.read_csv(r'D:\Users\lusty\Strive\GitHub\build-week-gryffindor\preprocessed.csv')
 
+df.to_csv()
+
 if st.button('Show data'):
     st.dataframe(df)
 
