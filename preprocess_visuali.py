@@ -91,6 +91,16 @@ df5.rename(columns = {'original_publish_year': 'original_publish_year2', 'minmax
 print(df5)
 
 
+#no of ratings and actual rating
+h = df4[['num_ratings', 'num_reviews']]
+
+df6 = h.sort_values('num_reviews', ascending= False)
+
+#no of award and ratings 
+
+
+
+
 
 # # #create a function that  returns the maximum minmax rating 
 def author_name(name: str):
