@@ -18,6 +18,7 @@ if st.button('Show data'):
 auth_input = st.text_input('Author name')
 column = df['author']
 df1 = df.loc[df.author.str.contains(auth_input, flags=re.IGNORECASE)]
-st.dataframe(df1)
+if len(auth_input) > 0 is not None:
+    st.dataframe(df1)
 # fig_scatter = px.scatter(df, x=df.avg_rating, y=df.num_pages, color=df.avg_rating)
 # st.plotly_chart(fig_scatter)
