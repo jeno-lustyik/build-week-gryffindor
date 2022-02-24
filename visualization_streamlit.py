@@ -1,3 +1,5 @@
+import re
+
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -13,5 +15,9 @@ df = pd.read_csv(r'D:\Users\lusty\Strive\GitHub\build-week-gryffindor\preprocess
 if st.button('Show data'):
     st.dataframe(df)
 
-# fig_hist_pages = px.histogram(df1, x=df1.pages, y=df1.avg_rating)
-# st.plotly_chart(fig_hist_pages)
+auth_input = st.text_input('Author name')
+column = df['author']
+df1 = df.loc[df.author.str.contains(auth_input, flags=re.IGNORECASE)]
+st.dataframe(df1)
+# fig_scatter = px.scatter(df, x=df.avg_rating, y=df.num_pages, color=df.avg_rating)
+# st.plotly_chart(fig_scatter)
