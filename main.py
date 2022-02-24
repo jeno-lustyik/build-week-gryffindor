@@ -27,7 +27,7 @@ book_series_list = []
 
 # we need to scrape 1000 books, Each webpage has 100 books, so we need 10 webpages
 def initial_links():
-    for i in range(1, 2):
+    for i in range(9,11):
         url = f"https://www.goodreads.com/list/show/47.Best_Dystopian_and_Post_Apocalyptic_Fiction?page={i}"
         page_10_links.append(url)
     # print(page_10_link)
@@ -49,7 +49,7 @@ def book_1000_links():
         soup1 = BeautifulSoup(page1.content, 'html.parser')
         book_link = soup1.find_all('a', class_="bookTitle")
 
-        for i in book_link[45:51]:
+        for i in book_link:
             book_href = i.get('href')
             books_links_1000.append(book_href)
 
@@ -67,7 +67,7 @@ books_links_1000 = book_1000_links()
 
 # Scrapper function to scrape each and every req element  from the web
 
-def book_details():
+def scraper():
     for url in books_links_1000:
         # Useragent and requesting the page
         headers = {'User-Agent': 'Chrome/98.0.4758.102'}
@@ -106,9 +106,9 @@ def book_details():
             genre = soup.find_all('a', class_='actionLinkLite bookPageGenreLink')
             genres_dump = []
             for i in genre:
-                if len(genres_dump) <= 1 and i not in genres_dump:
+                if len(genres_dump) <= 1 and f'{i.text}, ' not in genres_dump:
                     genres_dump.append(f'{i.text}, ')
-                elif len(genres_dump) == 2 and i not in genres_dump:
+                elif len(genres_dump) == 2 and f'{i.text}, ' not in genres_dump:
                     genres_dump.append(i.text)
                     genres.append(''.join(genres_dump))
                     break
@@ -169,8 +169,7 @@ def book_details():
         else:
             book_series_list.append('No series found')
 
-        df = pd.DataFrame(
-            {'link': book_url,
+        a = {'link': book_url,
              'title': titles,
              'author': authors,
              'num_reviews': num_ratings,
@@ -181,10 +180,10 @@ def book_details():
              'book_series': book_series_list,
              'genre': genres,
              'awards': awards,
-             'places': settings})
-
-        print(df)
+             'places': settings}
+        df = pd.DataFrame.from_dict(a, orient='index')
+        df = df.transpose()
+        #print(df)
         df.to_csv('100books.csv', mode='w', index=False, header=False)
 
-
-book_details()
+scraper()
