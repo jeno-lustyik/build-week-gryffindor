@@ -1,7 +1,13 @@
-a = "Published October 2 2006 by Alfred A. Knopf"
-b = a.split()
-years = []
-for i in b:
-    if i.isdigit() and len(i) == 4:
-        years.append(int(i))
-print(years)
+import pandas as pd
+import re
+
+df = pd.read_csv("final.csv", sep = ',' ,names=['url','title','author','num_reviews','num_ratings','avg_stars','num_pages','publishing_year','series','genre','awards','places'])
+#print(df)
+a = df[df['title'].str.contains("1984", flags=re.IGNORECASE)]
+print(a)
+
+
+
+
+
+

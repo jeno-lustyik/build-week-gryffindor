@@ -1,5 +1,4 @@
 from ast import IsNot
-import urllib.request
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -12,6 +11,7 @@ filepath.parent.mkdir(parents=True, exist_ok=True)
 # empty lists for each scraping element that we need for each book.
 page_10_links = []
 books_links_1000 = []
+book_url = []
 titles = []
 authors = []
 num_reviews = []
@@ -27,7 +27,7 @@ book_series_list = []
 
 # we need to scrape 1000 books, Each webpage has 100 books, so we need 10 webpages
 def initial_links():
-    for i in range(1, 11):
+    for i in range(9,11):
         url = f"https://www.goodreads.com/list/show/47.Best_Dystopian_and_Post_Apocalyptic_Fiction?page={i}"
         page_10_links.append(url)
     # print(page_10_link)
@@ -60,14 +60,23 @@ def book_1000_links():
 books_links_1000 = book_1000_links()
 
 
-def book_details():
-    for url in books_links_1000[768:]:
+# print(books_links_1000)
+
+
+
+
+# Scrapper function to scrape each and every req element  from the web
+
+def scraper():
+    for url in books_links_1000:
         # Useragent and requesting the page
         headers = {'User-Agent': 'Chrome/98.0.4758.102'}
-        pg = requests.get(f"https://www.goodreads.com{url}", headers=headers)
-        time.sleep(5)
+        book_link = f"https://www.goodreads.com{url}"
+        book_url.append(book_link)
+        pg = requests.get(book_link, headers=headers)
+        time.sleep(10)
         soup = BeautifulSoup(pg.content, 'html.parser')
-        time.sleep(5)
+        time.sleep(10)
 
         # Titles
         if soup.find('h1', class_='gr-h1 gr-h1--serif') is not None:
@@ -97,9 +106,9 @@ def book_details():
             genre = soup.find_all('a', class_='actionLinkLite bookPageGenreLink')
             genres_dump = []
             for i in genre:
-                if len(genres_dump) <= 1 and i.text not in genres_dump:
+                if len(genres_dump) <= 1 and f'{i.text}, ' not in genres_dump:
                     genres_dump.append(f'{i.text}, ')
-                elif len(genres_dump) == 2 and i.text not in genres_dump:
+                elif len(genres_dump) == 2 and f'{i.text}, ' not in genres_dump:
                     genres_dump.append(i.text)
                     genres.append(''.join(genres_dump))
                     break
@@ -125,14 +134,9 @@ def book_details():
                 if i.text == 'Setting':
                     set_box = box_div[box_div.index(i) + 1].find_all('a')
                     for k in set_box:
-                        if len(setting) == 0:
-                            setting = [k.text.replace(',', ' -')]
-                        else:
-                            setting.append(k.text.replace(',', ' -'))
-                    setting = ','.join(setting)
-                    settings.append(setting)
-            if len(setting) == 0:
-                settings.append('Not found')
+                        setting.append(k.text.replace(',', ' -'))
+            setting = ','.join(setting)
+            settings.append(setting)
         else:
             settings.append('Not found')
 
@@ -161,14 +165,12 @@ def book_details():
         if soup.find('h2', id="bookSeries") is not None:
             book_series = soup.find('h2', id="bookSeries")
             a = book_series.text.strip()
-            if len(a) > 0:
-                book_series_list.append(a[1:(len(a) - 1)])
-            else:
-                book_series_list.append('No series found')
+            book_series_list.append(a[1:(len(a) - 1)])
         else:
             book_series_list.append('No series found')
 
-        a = {'title': titles,
+        a = {'link': book_url,
+             'title': titles,
              'author': authors,
              'num_reviews': num_ratings,
              'num_ratings': num_reviews,
@@ -180,11 +182,8 @@ def book_details():
              'awards': awards,
              'places': settings}
         df = pd.DataFrame.from_dict(a, orient='index')
-        df.transpose()
+        df = df.transpose()
+        #print(df)
         df.to_csv('100books.csv', mode='w', index=False, header=False)
 
-
-initial_links()
-book_1000_links()
-book_details()
-
+scraper()
