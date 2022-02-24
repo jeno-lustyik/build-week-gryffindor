@@ -7,7 +7,9 @@ import html.parser
 from time import sleep
 import matplotlib.pyplot as plt
 
-df = pd.read_csv(r'C:\Users\omolara\Documents\strive school\build-week-gryffindor\100books-1to1000.csv', header = None)
+#def preprocessing():
+
+df = pd.read_csv(r'C:\Users\omolara\Documents\strive school\build-week-gryffindor\final.csv', header = None)
 df.columns = ['url', 'titles','author','num_reviews','num_ratings','avg_rating', 'num_pages','original_publish_year', 'book_series', 'genre', 'awards', 'places']
 #print(df)
 
@@ -52,7 +54,7 @@ def avg_rating_clean_up():
     return d
 
 df2 = avg_rating_clean_up()
-#print(df2.dtypes)
+print(df2)
 
 
 # # # # #defining a function for the min-max normalization
@@ -64,7 +66,7 @@ def min_max_norm():
     e = df2.assign(minmax_norm_ratings = minmax_norm[column])
     return e
 df3 = min_max_norm()
-#print(df3)
+print(df3)
 
 # # #finding the mean of avg_ratings column 
 average = df2.average_rating_flo.mean()
@@ -80,12 +82,20 @@ df4= mean_norm()
 
 print(df4)
 
+#group thr group by original published year and get the mean of the min_max_norm_rating
+
+g = df4.groupby('original_publish_year')['minmax_norm_ratings'].mean()
+df5 = pd.DataFrame(g)
+df5.reset_index(inplace=True)
+df5.rename(columns = {'original_publish_year': 'original_publish_year2', 'minmax_norm_ratings': 'Ratings minmax mean'}, inplace = True)
+print(df5)
+
 
 
 # # #create a function that  returns the maximum minmax rating 
 def author_name(name: str):
-    g = df3.loc[df['author'] == name]
-    h = g.sort_values('minmax_norm_ratings', ascending= False)
+    h = df3.loc[df['author'] == name]
+    i = h.sort_values('minmax_norm_ratings', ascending= False)
     return h.iloc[0, 0]
 print(author_name('Dean F. Wilson'))
 
@@ -95,7 +105,6 @@ print(author_name('Dean F. Wilson'))
 # plot the number of awards and avg.ratings against title of books and compare if the award given goes in line with the avg.rating 
 #plot a scattered graph of ratings to the number of pages, to check if the number of rating is determined by the number of pages 
 # use a straight line graph to see if the number of raing and number of review follow a certain pattern
-
-# plt.bar(df4['Ratings minmax mean'],df4['original_publish_year'])
-# plt.legend()
-# plt.show()
+plt.bar(df5['original_publish_year2'],df5['Ratings minmax mean'])
+plt.legend()
+plt.show()
