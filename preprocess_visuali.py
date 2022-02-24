@@ -36,7 +36,7 @@ def len_award():
 
 df1 = len_award()
 print(df1.head())
-#print(df.head())
+print(df1['awards_len'])
 
 
 def avg_rating_clean_up():
@@ -49,7 +49,7 @@ def avg_rating_clean_up():
         else:
             c.append(0)
  
-    d = df.assign(average_rating_flo = c)
+    d = df1.assign(average_rating_flo = c)
     d['average_rating_flo'] = d['average_rating_flo'].astype(float)
     return d
 
@@ -69,7 +69,7 @@ df3 = min_max_norm()
 print(df3)
 
 # # #finding the mean of avg_ratings column 
-average = df2.average_rating_flo.mean()
+average = df3.average_rating_flo.mean()
 #print(average)
 #defining a function for the mean normalization
 def mean_norm():
@@ -95,18 +95,24 @@ print(df5)
 h = df4[['num_ratings', 'num_reviews']]
 
 df6 = h.sort_values('num_reviews', ascending= False)
+#print[df6]
 
 #no of award and ratings 
 
+i = df4[['average_rating_flo', 'awards_len']]
+
+df7 = i.sort_values('average_rating_flo', ascending= False)
+
+print(df7)
 
 
 
 
 # # #create a function that  returns the maximum minmax rating 
 def author_name(name: str):
-    h = df3.loc[df['author'] == name]
-    i = h.sort_values('minmax_norm_ratings', ascending= False)
-    return h.iloc[0, 0]
+    j = df3.loc[df['author'] == name]
+    k = j.sort_values('minmax_norm_ratings', ascending= False)
+    return k.iloc[0, 0]
 print(author_name('Dean F. Wilson'))
 
 # #print(df.groupby('Director name')['Rating'])
@@ -115,6 +121,6 @@ print(author_name('Dean F. Wilson'))
 # plot the number of awards and avg.ratings against title of books and compare if the award given goes in line with the avg.rating 
 #plot a scattered graph of ratings to the number of pages, to check if the number of rating is determined by the number of pages 
 # use a straight line graph to see if the number of raing and number of review follow a certain pattern
-plt.bar(df5['original_publish_year2'],df5['Ratings minmax mean'])
-plt.legend()
-plt.show()
+# plt.bar(df5['original_publish_year2'],df5['Ratings minmax mean'])
+# plt.legend()
+# plt.show()
