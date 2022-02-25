@@ -64,7 +64,12 @@ st.plotly_chart(fig_rating_awa)
 # plt.ylim(1,5)
 # plt.xlim(1,43)
 
-#
+df_top50 = df.sort_values(by=['minmax_norm_ratings'])
+df_top50 = df_top50.loc[df_top50['average_rating_flo'] < df['average_rating_flo'].quantile(q=0.95)]
+df_top50 = df_top50.loc[df_top50['num_pages'] > 0]
+df_top50 = df_top50.loc[df_top50['num_ratings'] > 10000]
+df_top50 = df_top50[0:50]
+st.dataframe(df_top50)
 
 
 # num_pages / Ratings relationship
