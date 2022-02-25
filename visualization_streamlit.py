@@ -71,7 +71,4 @@ df_non_americas = df_non_americas.sort_values(by='avg_rating')
 
 fig_places = make_subplots(rows=1, cols=2)
 fig_places.add_trace()
-fig_places.add_trace(
-    x=df6['titles'], y=df6['avg_rating'],
-    row=1, col=2)
-st.plotly_chart(fig_places)
+fig_places.add_trace()
