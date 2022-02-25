@@ -30,7 +30,7 @@ def preprocessing():
 
             else:
                 a.append(0)
-    
+
         b=df.assign(awards_len = a)
         return b
 
@@ -48,13 +48,13 @@ def preprocessing():
 
             else:
                 c.append(0)
-    
+
         d = df1.assign(average_rating_flo = c)
         d['average_rating_flo'] = d['average_rating_flo'].astype(float)
         return d
 
     df2 = avg_rating_clean_up()
-    #print(df2)
+    print(df2)
 
 
     # # # # #defining a function for the min-max normalization
@@ -80,12 +80,13 @@ def preprocessing():
         return f
     df4= mean_norm()
 
-    #print(df4)
+    print(df4)
 
 
 
 
     #Visualization
+
 
     #group thr group by original published year and get the mean of the min_max_norm_rating
 
@@ -94,28 +95,63 @@ def preprocessing():
     df5.reset_index(inplace=True)
     df5.rename(columns = {'original_publish_year': 'original_publish_year2', 'minmax_norm_ratings': 'Ratings minmax mean'}, inplace = True)
     #print(df5)
+    ddf5= df5[df5['original_publish_year2'] > 0]
 
+    print(ddf5)
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    plt.scatter(ddf5['original_publish_year2'] , ddf5['Ratings minmax mean'], color = 'darkred', s = 25, alpha = 0.5, cmap = 'spectral');
+    plt.xlim(1500,2100,)
+    plt.ylim(0.5,10)
+    plt.xlabel('Publish year of books')
+    plt.ylabel('Minmax Ratings')
+    plt.title('Books by original publshed year and mean of the Minmax  normalization ratings')
+    plt.colorbar();
+    plt.legend()
 
     #no of ratings and actual rating
-    h = df4[['num_reviews','num_ratings']]
+    h = df4[['num_reviews','average_rating_flo']]
 
-    df6 = h.sort_values('num_ratings', ascending= False)
+    df6 = h.sort_values('average_rating_flo', ascending= False)
     print(df6)
 
+    fig, ax = plt.subplots(figsize=(12, 6))
+    plt.scatter( df6['average_rating_flo'],df6['num_reviews'] , color = 'darkred', s = 25)
+    plt.xlabel('average_rating_flo')
+    plt.ylabel('num_reviews')
+    plt.title('Number of rating and Actual rating of the book ')
+    plt.legend()
+    #Can this be used to make the decision to read a book or not?
+    
+    
     #no of award and ratings 
 
     i = df4[['average_rating_flo', 'awards_len']]
 
     df7 = i.sort_values('awards_len', ascending= False)
+    ddf7= df7[df7['awards_len'] > 0]
 
-    print(df7)
+    print(ddf7)
 
+   
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    plt.bar(ddf7['awards_len'],ddf7['average_rating_flo'], color = 'darkred')
+    # plt.ylim(1,5)
+    # plt.xlim(1,43)
+    plt.xlabel('num of award ')
+    plt.ylabel('average rating')
+    plt.title('number of award and average rating')
+    plt.legend()
+    
     #num of rating , average_rating
 
     j = df4[['average_rating_flo', 'num_ratings']]
 
     df8 = j.sort_values('num_ratings', ascending= False)
     print(df8)
+    
+
 
     ##num of rating , no_of _pages
 
@@ -130,6 +166,9 @@ def preprocessing():
         l = k.sort_values('minmax_norm_ratings', ascending= False)
         return k.iloc[0, 0]
     print(author_name('Dean F. Wilson'))
+
+    #plt a graph of 
+    
 
 preprocessing()
     # #print(df.groupby('Director name')['Rating'])
