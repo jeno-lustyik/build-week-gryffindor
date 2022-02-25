@@ -16,6 +16,7 @@ from PIL import Image
 
 # Title
 st.title("Annual Dystopian Book Expo")
+st.write("Gryffindor Team : jeno-lustyik, omolara-atoyebi, Nagarjuna")
 st.subheader("An insight into the best Dystopian books and authors")
 st.write("Introduction:")
 st.write("Our Boss want to make a Dystopian Book Expo in the central mall, He asked us to:")
@@ -106,7 +107,7 @@ def naga():
     #st.write(user_df)
 
     st.write("")
-    st.write("Note- Due to miscumminication,Our procurement team buys the book with highest ratings before our analysis")
+    st.write("Note- Due to mis-communication,Our procurement team buys the book with highest ratings before our analysis")
     st.subheader("Hey Reader, Let check some Suggestions:")
     def sug_cust():
         book_sug = ['Authors with most awards', 'Top Rated books']
@@ -193,13 +194,11 @@ def naga():
 naga_df = naga()
 
 def jeno():
-    df = pd.read_csv(r'C:\Users\rnr31\Documents\GitHub\build-week-gryffindor\final.csv', header=None)
-    book_input = st.text_input('Author\'s name')
-    df1 = df.loc[df['author'].str.contains(book_input, flags=re.IGNORECASE)]
-    if len(book_input) > 0:
-        st.dataframe(df1)
+    df = pd.read_csv(r'C:\Users\rnr31\Documents\GitHub\build-week-gryffindor\preprocessed.csv', header=0)
+    
 
     # minmax norm ratings and publish year
+    st.subheader("Published_year and min_max norm ratings")
 
     g = df.groupby('original_publish_year')['minmax_norm_ratings'].mean()
     df5 = pd.DataFrame(g)
@@ -240,7 +239,7 @@ def jeno():
     st.plotly_chart(fig_rating_awa)
     # plt.ylim(1,5)
     # plt.xlim(1,43)
-
+    st.subheader("Top 50 books in the expo!")
     df_top50 = df.sort_values(by=['minmax_norm_ratings'])
     df_top50 = df_top50.loc[df_top50['average_rating_flo'] < df['average_rating_flo'].quantile(q=0.95)]
     df_top50 = df_top50.loc[df_top50['num_pages'] > 0]
@@ -250,6 +249,7 @@ def jeno():
 
 
     # num_pages / Ratings relationship
+    st.subheader("Relationship of Pages & Ratings by Genre.")
 
     threshold_genres = st.slider('Set a threshold for books in genre:',1, 300)
     ser_genre = df['genre'].dropna()
@@ -278,6 +278,7 @@ def jeno():
         st.plotly_chart(fig_pages)
     else:
         st.text('This genre does not have enough books to show the data.')
+jeno_df = jeno()
 
 
 

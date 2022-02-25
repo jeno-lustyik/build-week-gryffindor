@@ -63,4 +63,4 @@ def missing_data_checker():
     places_index = df.index[(df['places']== '')].tolist()
     print(f"places : {len(places_index)}")
 
-# missing_data_checker()
+missing_data_checker()
