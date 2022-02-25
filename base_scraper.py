@@ -76,18 +76,18 @@ else:
 
 
 # ### Naga
-# # avg_rating(stars)
-# book_stars = soup.find('div', id="bookMeta")
-# star_count = book_stars.find('span', {'itemprop': 'ratingValue'})
-# stars_value = star_count.text
-# print(stars_value)
+# avg_rating(stars)
+book_stars = soup.find('div', id="bookMeta")
+star_count = book_stars.find('span', {'itemprop': 'ratingValue'})
+stars_value = star_count.text
+print(stars_value)
 
 
 # # num_pages
-# book_pages = soup.find('div', class_ = "row")
-# pages_count = book_pages.find('span', {'itemprop': 'numberOfPages'})
-# pages_value = pages_count.text
-# print(pages_value)
+book_pages = soup.find('div', class_ = "row")
+pages_count = book_pages.find('span', {'itemprop': 'numberOfPages'})
+pages_value = pages_count.text
+print(pages_value)
 
 # series
 book_series = soup.find('div', id="bookDataBox")
@@ -96,7 +96,7 @@ print(series_count)
 # note that some books does not have series- use if condition in that case
 
 # # Book_year
-# book_publish = soup.find('div', id='details')
-# publish_date = book_publish.find('nobr',class_="greyText").text
-# print(publish_date)
+book_publish = soup.find('div', id='details')
+publish_date = book_publish.find('nobr',class_="greyText").text
+print(publish_date)
 
