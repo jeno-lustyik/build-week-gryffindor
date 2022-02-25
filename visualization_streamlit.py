@@ -1,5 +1,4 @@
 import re
-
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -22,6 +21,51 @@ book_input = st.text_input('Author\'s name')
 df1 = df.loc[df['author'].str.contains(book_input, flags=re.IGNORECASE)]
 if len(book_input) > 0:
     st.dataframe(df1)
+
+# minmax norm ratings and publish year
+
+g = df.groupby('original_publish_year')['minmax_norm_ratings'].mean()
+df5 = pd.DataFrame(g)
+df5.reset_index(inplace=True)
+df5.rename(columns={'original_publish_year': 'original_publish_year2', 'minmax_norm_ratings': 'Ratings minmax mean'}, inplace=True)
+ddf5 = df5[df5['original_publish_year2'] > 0]
+ddf5 = ddf5.loc[ddf5['original_publish_year2'] < ddf5['original_publish_year2'].quantile(q=0.95)]
+ddf5 = ddf5.loc[ddf5['original_publish_year2'] > ddf5['original_publish_year2'].quantile(q=0.05)]
+fig_publish = px.scatter(ddf5, ddf5['original_publish_year2'], ddf5['Ratings minmax mean'])
+st.plotly_chart(fig_publish)
+
+# no of ratings and actual rating
+h = df[['num_reviews','average_rating_flo']]
+
+df6 = h.sort_values('average_rating_flo', ascending= False)
+df6 = df6.loc[df6['num_reviews'] < df['num_reviews'].quantile(q=0.95)]
+df6 = df6.loc[df6['num_reviews'] > df['num_reviews'].quantile(q=0.05)]
+
+df6 = df6.loc[df6['average_rating_flo'] < df['average_rating_flo'].quantile(q=0.95)]
+df6 = df6.loc[df6['average_rating_flo'] > df['average_rating_flo'].quantile(q=0.05)]
+print(df6)
+
+fig_rating_num = px.scatter(df6, df6['average_rating_flo'], df6['num_reviews'])
+fig_rating_num.update_layout(title='Number of ratings based on actual ratings')
+
+st.plotly_chart(fig_rating_num)
+
+
+#ratings / awards relationship
+
+i = df[['average_rating_flo', 'awards_len']]
+
+df7 = i.sort_values('awards_len', ascending=False)
+ddf7 = df7[df7['awards_len'] > 0]
+
+fig_rating_awa = px.histogram(ddf7, ddf7['awards_len'], ddf7['average_rating_flo'], histfunc='avg', nbins=8)
+fig_rating_awa.update_layout(title='Ratings and number of awards correlation', bargap=0.1)
+st.plotly_chart(fig_rating_awa)
+# plt.ylim(1,5)
+# plt.xlim(1,43)
+
+#
+
 
 # num_pages / Ratings relationship
 
