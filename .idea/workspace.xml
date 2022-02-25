@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5cd8435-67cf-4c1f-a1f7-faa9dcdb2f11" name="Changes" comment="scraper updates">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/100books.csv" beforeDir="false" afterPath="$PROJECT_DIR$/100books.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization_streamlit.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization_streamlit.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +61,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="advanced.settings" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -97,6 +96,9 @@
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="C:\Users\lusty\anaconda3\envs\strive2\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -153,6 +155,7 @@
       <workItem from="1645440021027" duration="8359000" />
       <workItem from="1645541340800" duration="2000" />
       <workItem from="1645541357243" duration="5189000" />
+      <workItem from="1645771952349" duration="645000" />
     </task>
     <task id="LOCAL-00001" summary="scraper updates">
       <created>1645449451920</created>

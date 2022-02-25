@@ -22,22 +22,36 @@ book_input = st.text_input('Author\'s name')
 df1 = df.loc[df['author'].str.contains(book_input, flags=re.IGNORECASE)]
 if len(book_input) > 0:
     st.dataframe(df1)
+
 # num_pages / Ratings relationship
 
-genre_selector = st.selectbox(label='Select a genre', options=df['genres'])
-df2 = df.loc[df['num_pages'] != 0]
-df2 = df2.loc[df['num_pages'] < df['num_pages'].quantile(q=0.95)]
-df2 = df2.loc[df['num_ratings'] < df['num_ratings'].quantile(q=0.95)]
+threshold_genres = st.slider('Set a threshold for books in genre:',1, 300)
+ser_genre = df['genre'].dropna()
+unique_genres = set(','.join(ser_genre).split(','))
+unique_genres = sorted(unique_genres)
+# counts = df['genre'].value_counts()
+# res = df[~df['genre'].isin(counts[counts < threshold_genres].index)]
+# st.dataframe(res)
+genre_selector = st.selectbox(label='Select a genre', options=unique_genres)
+df_genre_notna = df.dropna(subset=['genre'])
+df_genre = df_genre_notna.loc[df_genre_notna['genre'].str.contains(genre_selector, flags=re.IGNORECASE)]
 
-df2 = df2.loc[df['num_pages'] > df['num_pages'].quantile(q=0.05)]
-df2 = df2.loc[df['num_ratings'] > df['num_ratings'].quantile(q=0.05)]
+if len(df_genre) >= threshold_genres:
+    df2 = df_genre.loc[df_genre['num_pages'] != 0]
+    df2 = df2.loc[df['num_pages'] < df['num_pages'].quantile(q=0.95)]
+    df2 = df2.loc[df['num_ratings'] < df['num_ratings'].quantile(q=0.95)]
 
-fig_pages = make_subplots(cols=2, rows=1)
-fig_pages.add_trace(go.Scatter(x=df2['num_pages'], y=df2['minmax_norm_ratings'], mode='markers', name='Pages Scatter'), col=1, row=1)
-fig_pages.add_trace(go.Histogram(x=df2['num_pages'], y=df2['minmax_norm_ratings'], histfunc='avg', nbinsx=10, name='Pages Histogram'), col=2, row=1)
-fig_pages.update_layout(bargap=0.1)
+    df2 = df2.loc[df['num_pages'] > df['num_pages'].quantile(q=0.05)]
+    df2 = df2.loc[df['num_ratings'] > df['num_ratings'].quantile(q=0.05)]
 
-st.plotly_chart(fig_pages)
+    fig_pages = make_subplots(cols=2, rows=1)
+    fig_pages.add_trace(go.Scatter(x=df2['num_pages'], y=df2['minmax_norm_ratings'], mode='markers', name='Pages Scatter'), col=1, row=1)
+    fig_pages.add_trace(go.Histogram(x=df2['num_pages'], y=df2['minmax_norm_ratings'], histfunc='avg', nbinsx=10, name='Pages Histogram'), col=2, row=1)
+    fig_pages.update_layout(bargap=0.1)
+
+    st.plotly_chart(fig_pages)
+else:
+    st.text('This genre does not have enough books to show the data.')
 
 #
 # fig_scatter = px.scatter(df2, x=df2['num_pages'], y=df2['minmax_norm_ratings'], color=df2['minmax_norm_ratings'])
@@ -49,23 +63,15 @@ st.plotly_chart(fig_pages)
 
 # Locations in the book: is a book rated higher if it happens in america?
 
-df3 = df.dropna(axis=0, subset=['places'])
-df5 = df3.loc[df3['places'].str.contains('america', flags=re.IGNORECASE)]
-df5 = df5.sort_values(by='avg_rating')
-# st.plotly_chart(fig_places)
-df4 = pd.DataFrame(
-    {'americas_rating': df3['avg_rating'].loc[df3['places'].str.contains('america', flags=re.IGNORECASE)],
-     'americas_reviews': df3['num_reviews'].loc[df3['places'].str.contains('america', flags=re.IGNORECASE)]
-     })
-df6 = df3.loc[~df3['places'].str.contains('america', flags=re.IGNORECASE)]
-df6 = df6.sort_values(by='avg_rating')
+df_locs = df.dropna(axis=0, subset=['places'])
+df_americas = df_locs.loc[df_locs['places'].str.contains('america', flags=re.IGNORECASE)]
+df_americas = df_americas.sort_values(by='avg_rating')
+df_non_americas = df_locs.loc[~df_locs['places'].str.contains('america', flags=re.IGNORECASE)]
+df_non_americas = df_non_americas.sort_values(by='avg_rating')
 
 fig_places = make_subplots(rows=1, cols=2)
-fig_places.add_scatter(
-    x=df5['titles'], y=df5['avg_rating'],
-    row=1, col=1)
-fig_places.add_scatter(
+fig_places.add_trace()
+fig_places.add_trace(
     x=df6['titles'], y=df6['avg_rating'],
     row=1, col=2)
 st.plotly_chart(fig_places)
-st.dataframe(df6)
