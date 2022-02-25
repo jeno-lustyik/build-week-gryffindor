@@ -7,8 +7,9 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
 # titles
-st.title("Annual Dystopian Book Expo")
+st.title("Welcome to Annual Dystopian Book Expo")
 st.subheader("An insight into the best Dystopian books and authors")
+
 
 headers = ['url', 'titles', 'author', 'num_ratings', 'num_reviews', 'avg_rating', 'num_pages', 'publish_date', 'series',
            'genres', 'awards', 'places']
