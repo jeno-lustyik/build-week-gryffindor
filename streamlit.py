@@ -1,4 +1,7 @@
 import re
+import os
+
+from matplotlib import container
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -6,6 +9,8 @@ import plotly.express as px
 import seaborn as sns
 import base64
 import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
 
 # Title
 st.title("Annual Dystopian Book Expo")
@@ -19,11 +24,7 @@ df.columns = ['url', 'title', 'author', 'num_ratings', 'num_reviews', 'avg_ratin
 if st.button('Show data'):
     st.dataframe(df)
 
-# auth_input = st.text_input('Author name')
-# df1 = df.loc[df.author.str.contains(auth_input, flags=re.IGNORECASE)]
-# st.dataframe(df1)
-# fig_scatter = px.scatter(df, x=df.avg_rating, y=df.num_pages, color=df.avg_rating)
-# st.plotly_chart(fig_scatter)
+
 def user_interaction():
     st.sidebar.header("Customer Input Interaction")
     book_filters = ['Book & Author', 'Published year', 'page & ratings']
@@ -73,21 +74,6 @@ def user_interaction():
         elif check_star5:
             df2 = df.loc[(df.avg_rating >= 4.00) & (df.avg_rating<=4.99)]
             st.dataframe(df2)
-        # elif selected_pages>=102 and check_star1:
-        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 0.00) & (df.avg_rating<=0.99)]
-        #     st.dataframe(df2)
-        # elif selected_pages>=102 and check_star2:
-        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 1.00) & (df.avg_rating<=1.99)]
-        #     st.dataframe(df2)
-        # elif selected_pages>=102 and check_star3:
-        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 2.00) & (df.avg_rating<=2.99)]
-        #     st.dataframe(df2)
-        # elif selected_pages>=102 and check_star4:
-        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 3.00) & (df.avg_rating<=3.99)]
-        #     st.dataframe(df2)
-        # elif selected_pages>=102 and check_star5:
-        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 4.00)]
-        #     st.dataframe(df2)
         else:
             st.write("Please select a valid page number or required rating")
 
@@ -108,6 +94,85 @@ def user_interaction():
 
 user_df = user_interaction()
 st.write(user_df)
+
+st.write("Suggestions to Customer")
+def sug_cust():
+    book_sug = ['Authors with most awards', 'Top Rated books']
+    page = st.radio('Select one', book_sug)
+
+    if page == 'Authors with most awards':
+        def most_award_author():
+            def len_award():
+                awards = df['awards'].tolist()
+                a = []
+                for i in awards:
+                    if i!='Not found':
+                        i = str(i)
+                        i = i.split(',')
+                        a.append(len(i))
+
+                    else:
+                        a.append(0)
+
+                b=df.assign(awards_len = a)
+                return b
+
+            df1 = len_award()
+            data = [df1["author"], df1["awards_len"]]
+            headers = ["author", "no.of awards"]
+            df2= pd.concat(data, axis=1, keys=headers)
+            df3= df2.sort_values(by='no.of awards', ascending=False)
+            df4 = df3.head(10)
+            # bar chart need to be plotted
+            author_bar = px.bar(df4, df4['author'],df4['no.of awards'])
+            st.plotly_chart(author_bar)
+        aa_df = most_award_author()
+        st.write(aa_df)
+    if page == "Top Rated books":
+        def book_img_rating():
+            st.write("Top rated books")
+            col1,col2,col3,col4,col5,col6,col7,col8,col9,col10=st.columns(10)
+            with col1:
+                image1 = Image.open(r'C:\Users\rnr31\Documents\GitHub\build-week-gryffindor\img\1-5.0.jpg')
+                st.image(image1, caption = 'Breakaway')
+            # col-2
+            with col2:
+                image1 = Image.open(r'C:\Users\rnr31\Documents\GitHub\build-week-gryffindor\img\2-4.83.jpg')
+                st.image(image1, caption = 'Earth Flown')
+            # col-3
+            with col3:
+                image1 = Image.open(r'C:\Users\rnr31\Documents\GitHub\build-week-gryffindor\img\3-4.78.jpg')
+                st.image(image1, caption = 'Zombie Road 5')
+            # col-4
+            with col4:
+                image1 = Image.open(r'C:\Users\rnr31\Documents\GitHub\build-week-gryffindor\img\4-4.77.jpg')
+                st.image(image1, caption = 'Down and Rising')
+            # col-5
+            with col5:
+                image1 = Image.open(r'C:\Users\rnr31\Documents\GitHub\build-week-gryffindor\img\5-5.77.jpg')
+                st.image(image1, caption = 'Lost Helix')
+
+
+
+        cont_img = book_img_rating()
+        st.write(cont_img)
+
+cust_sug_df = sug_cust()
+st.write(cust_sug_df)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

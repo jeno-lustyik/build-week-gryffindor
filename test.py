@@ -69,6 +69,28 @@ print(df.dtypes)
 #         st.dataframe(df2)
 
 
+# data = [df["title"], df["avg_stars"]]
+# headers = ["title", "stars"]
+# df1= pd.concat(data, axis=1, keys=headers)
+# df2= df1.sort_values(by='stars', ascending=False)
+# df3 = df2.head(10)
+# print(df3)
+
+        # elif selected_pages>=102 and check_star1:
+        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 0.00) & (df.avg_rating<=0.99)]
+        #     st.dataframe(df2)
+        # elif selected_pages>=102 and check_star2:
+        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 1.00) & (df.avg_rating<=1.99)]
+        #     st.dataframe(df2)
+        # elif selected_pages>=102 and check_star3:
+        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 2.00) & (df.avg_rating<=2.99)]
+        #     st.dataframe(df2)
+        # elif selected_pages>=102 and check_star4:
+        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 3.00) & (df.avg_rating<=3.99)]
+        #     st.dataframe(df2)
+        # elif selected_pages>=102 and check_star5:
+        #     df2 = df.loc[(df.pages <= selected_pages) & (df.avg_rating >= 4.00)]
+        #     st.dataframe(df2)
 
 
 
