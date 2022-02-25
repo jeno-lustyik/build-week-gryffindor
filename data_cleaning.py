@@ -1,5 +1,6 @@
 
 from ast import IsNot
+from cmath import nan
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -307,10 +308,16 @@ def missing_places():
 print("places was done")
 
 
+## changing dtype
+actual_df = pd.read_csv("final.csv", sep = ',' ,names=['url','title','author','num_reviews','num_ratings','avg_stars','num_pages','publishing_year','series','genre','awards','places'])
 
+type_changed_df = actual_df.astype({'url':'object','title':'object','author':'object','num_reviews':'int64','num_ratings':'int64','avg_stars':'float64','num_pages':'int64','publishing_year':'int64','series':str,'genre':'bool','awards':'object','places':'object'})
 
+#print(type_changed_df.dtypes)
+for i in type_changed_df['series']:
+    if i =='nan':
+        type_changed_df['series'].replace(nan,False)
 
-
-
-
-       
+print(type_changed_df['series'])
+#actual_df['url']= actual_df.url.astype('url')
+    

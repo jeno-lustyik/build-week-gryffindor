@@ -1,6 +1,7 @@
 import pandas as pd
 
 df = pd.read_csv("final.csv", sep = ',' ,names=['url','title','author','num_reviews','num_ratings','avg_stars','num_pages','publishing_year','series','genre','awards','places'])
+print(df.dtypes)
 def missing_data_checker():
     ####-0
     url_index = df.index[(df['url']=='')].tolist()
@@ -62,4 +63,4 @@ def missing_data_checker():
     places_index = df.index[(df['places']== '')].tolist()
     print(f"places : {len(places_index)}")
 
-missing_data_checker()
+# missing_data_checker()
